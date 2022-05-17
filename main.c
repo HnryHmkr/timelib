@@ -106,6 +106,10 @@
         return day_of_year;
     }
 
+/*
+get_weekday berechnet mit dem Übergabenwerten des Jahres, Monats und Tages,
+wobei 0 für Sonntag, 1 für Montag usw. zurückgegeben wird.
+*/
 int get_weekday(int jahr, int monat, int tag)
     {
         int d , m, y, c, w=0;
@@ -115,11 +119,12 @@ int get_weekday(int jahr, int monat, int tag)
         {
             d= tag;
             m= monat-2;
-            y= (jahr-1) %100;
+            y= jahr %100;
             if (monat == 1 || monat == 2)
             {
                 c=(jahr-1)/100;
                 m=monat+10;
+                y-=1;
             }
             else
             {
@@ -132,11 +137,15 @@ int get_weekday(int jahr, int monat, int tag)
         }
     }
 
+/*
+calender_week gibt Dank der Übergabewerten Jahr, Monat, Tag die Kalenderwoche zurück.
+wenn das Datum einer Kalenderwoche zugehört, die noch zum letzten jahr gehört wird 0 zurückgegeben.
+*/
 int calender_week(int jahr, int monat, int tag)
 {
     int week,t=0;
 
-    if (get_weekday(jahr,1,1)==0)
+    if (get_weekday(jahr,1,1)<1)
     {
     t=t+1;
     }
@@ -148,10 +157,27 @@ int calender_week(int jahr, int monat, int tag)
     {
     t+=get_weekday(jahr,1,1);
     }
+
+
     t+= day_of_the_year(tag,monat,jahr);
     if(t>6)
     {
     week= t/7;
+    }
+    if (monat == 1 && tag < 4)
+    {
+        if(get_weekday(jahr,01,tag)>3||get_weekday(jahr,01,tag)==0)
+        {
+            week=0;
+        }
+    }
+
+    if(monat==12 && tag ==30 || tag==31)
+    {
+        if(get_weekday(jahr,12,31)<3)
+        {
+            week=100;
+        }
     }
 
     return week;
@@ -184,7 +210,19 @@ int main()
 
     printf("Das angegebene Tag ist der %i des jahres %i \n",day_of_the_year(tag,monat,jahr),jahr);
     printf("Wochentag %s \n", weekday[get_weekday(jahr,monat,tag)]);
-    printf("Der Tag liegt in Kalenderwoche %i \n",calender_week(jahr,monat,tag));
+
+    if(calender_week(jahr,monat,tag)<1)
+    {
+    printf("Der Tag liegt in Kalenderwoche %i des Jahres %i\n",calender_week(jahr-1,12,31),jahr-1);
+    }
+    else if(calender_week(jahr,monat,tag)>55)
+    {
+    printf("Der Tag liegt in Kalenderwoche %i des Jahres %i\n",1,jahr+1);
+    }
+    else
+    {
+    printf("Der Tag liegt in Kalenderwoche %i des Jahres %i\n",calender_week(jahr,monat,tag),jahr);
+    }
 
     return 0;
 
