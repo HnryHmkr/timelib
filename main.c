@@ -115,10 +115,10 @@ int get_weekday(int jahr, int monat, int tag)
         {
             d= tag;
             m= monat-2;
-            y= jahr %100;
+            y= (jahr-1) %100;
             if (monat == 1 || monat == 2)
             {
-                c=jahr-1/100;
+                c=(jahr-1)/100;
                 m=monat+10;
             }
             else
@@ -131,6 +131,31 @@ int get_weekday(int jahr, int monat, int tag)
             return w;
         }
     }
+
+int calender_week(int jahr, int monat, int tag)
+{
+    int week,t=0;
+
+    if (get_weekday(jahr,1,1)==0)
+    {
+    t=t+1;
+    }
+    else if(get_weekday(jahr,1,1) <4)
+    {
+    t=t-get_weekday(jahr,1,1);
+    }
+    else
+    {
+    t+=get_weekday(jahr,1,1);
+    }
+    t+= day_of_the_year(tag,monat,jahr);
+    if(t>6)
+    {
+    week= t/7;
+    }
+
+    return week;
+}
 
 
 int main()
@@ -159,6 +184,7 @@ int main()
 
     printf("Das angegebene Tag ist der %i des jahres %i \n",day_of_the_year(tag,monat,jahr),jahr);
     printf("Wochentag %s \n", weekday[get_weekday(jahr,monat,tag)]);
+    printf("Der Tag liegt in Kalenderwoche %i \n",calender_week(jahr,monat,tag));
 
     return 0;
 
