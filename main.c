@@ -106,9 +106,47 @@
         return day_of_year;
     }
 
+int get_weekday(int jahr, int monat, int tag)
+    {
+        int d , m, y, c, w=0;
+        double t = 0;
+
+        if(exists_date(jahr, monat, tag) == 1)
+        {
+            d= tag;
+            m= monat-2;
+            y= jahr %100;
+            if (monat == 1 || monat == 2)
+            {
+                c=jahr-1/100;
+                m=monat+10;
+            }
+            else
+            {
+                c=jahr/100;
+            }
+            t= d+(2.6*m-0.2)+y+(y/4)+(c/4)-2*c;
+            w=t;
+            w=w%7;
+            return w;
+        }
+    }
+
+
 int main()
 {
-   int jahr, monat, tag;
+
+    int jahr, monat, tag;
+    char (*weekday[7])[14];
+    weekday[0]="Sonntag";
+    weekday[1]="Montag ";
+    weekday[2]="Dienstag";
+    weekday[3]="Mittwoch";
+    weekday[4]="Donnerstag";
+    weekday[5]="Freitag";
+    weekday[6]="Samstag";
+
+
     printf("Dies ist ein Rechner für die Zahl des Tages!\n");
     do{
     printf("Bitte Jahr angeben:\n");
@@ -119,8 +157,8 @@ int main()
     scanf("%i",&tag);}
     while (exists_date(jahr, monat, tag) == 0);
 
-    printf("Das angegebene Tag ist der %i des jahres %i",day_of_the_year(tag,monat,jahr),jahr);
-
+    printf("Das angegebene Tag ist der %i des jahres %i \n",day_of_the_year(tag,monat,jahr),jahr);
+    printf("Wochentag %s \n", weekday[get_weekday(jahr,monat,tag)]);
 
     return 0;
 
